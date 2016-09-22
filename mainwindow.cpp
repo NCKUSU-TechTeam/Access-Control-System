@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->mainToolBar->setVisible(false);
+    ui->menuBar->setVisible(false);
     // Set up layout and add the object into it
     adder = new QWidget();
     scanner = new QWidget();
@@ -46,6 +48,9 @@ void MainWindow::setupAdderPart()
     aLayout->addWidget(addThisUID,1,1,1,1);
     aLayout->addWidget(clearThisUID,1,2,1,1);
 
+    scanPender = new QTimer();
+    connect(scanPender,SIGNAL(timeout()),this,SLOT(pendingScan()));
+
     adder->setLayout(aLayout);
 }
 
@@ -63,6 +68,10 @@ void MainWindow::setupScannerPart()
     sLayout->addWidget(scannedUID,0,1,1,1);
     sLayout->addWidget(compareResult,1,1,1,1);
 
+    scanPender_long = new QTimer();
+    connect(turnOn,SIGNAL(clicked(bool)),this,SLOT(openScanMode()));
+    connect(scanPender_long,SIGNAL(timeout()),this,SLOT(pendingScan_long()));
+
     scanner->setLayout(sLayout);
 }
 
@@ -73,17 +82,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::scanTheUID()
 {
-    // Dealing with the scanner
-    QFile createFile("output.txt");
-    createFile.open(QIODevice::ReadWrite);
-    //QProcess::execute("echo \"FF CA 00 00 00\" | scriptor > output.txt");
-    QProcess::execute("./readCardID");
-    // Get the content in output.txt
-    QString rawData = QString(createFile.readAll());
-    QString UID = rawData.mid(38,17);
-    createFile.close();
-    // Display UID
-    UID_Displayer->setText(UID);
+    // Enable the timer
+    scanPender->start(100);
+    scanPender->setInterval(100);
+    // And Disable scanner
+    scanner->setEnabled(false);
 }
 
 void MainWindow::addCurrentUID()
@@ -105,14 +108,64 @@ void MainWindow::clearCurrentUID()
     UID_Displayer->setText("");
 }
 
+void MainWindow::pendingScan()
+{
+    // Dealing with the scanner
+    QFile createFile("output.txt");
+    createFile.open(QIODevice::ReadWrite);
+    QProcess::execute("./readCardID");
+    // Get the content in output.txt
+    QString rawData = QString(createFile.readAll());
+    QString UID = rawData.mid(38,17);
+    createFile.close();
+
+    if(UID.length() == 17){
+        // Display UID
+        UID_Displayer->setText(UID);
+        scanPender->stop();
+        scanner->setEnabled(true);
+    }
+    else{
+        // Show error
+        UID_Displayer->setText("Sleeping ...");
+    }
+}
+
 void MainWindow::openScanMode()
 {
+    scanPender_long->start(100);
+    scanPender_long->setInterval(1000);
+    adder->setEnabled(false);
+}
 
+void MainWindow::pendingScan_long()
+{
+    // Dealing with the scanner
+    QFile createFile("output.txt");
+    createFile.open(QIODevice::ReadWrite);
+    QProcess::execute("./readCardID");
+    // Get the content in output.txt
+    QString rawData = QString(createFile.readAll());
+    QString UID = rawData.mid(38,17);
+    createFile.close();
+
+    if(UID.length() == 17){
+        // Display UID
+        scannedUID->setText(UID);
+
+        // Need to check the database
+        compareResult->setText("...");
+    }
+    else{
+        // Show error
+        scannedUID->setText("wait for scanning ...");
+    }
 }
 
 void MainWindow::showInfo()
 {
     QMessageBox msgBox;
+    msgBox.setWindowTitle(tr("Access Control System - version %1").arg(VERSION));
     msgBox.setText("Base on original pc/sc tools to build this program\n"
                    "Fit with the card no:\"3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 00 01 00 00 00 00 6A\"\n"
                 "GUI Author : Kevin Chiu , https://github.com/kevinbird61\n");

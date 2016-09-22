@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
     // ============= Disable scaling size =============
     w.setFixedSize(w.width(),w.height());
     w.setWindowTitle("NCKU-SU Access Control System");
+    w.setWindowIcon(QIcon(":nckusu"));
     w.show();
 
     return a.exec();

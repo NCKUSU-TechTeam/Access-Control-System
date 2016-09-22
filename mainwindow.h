@@ -7,7 +7,10 @@
 #include <QPushButton>
 #include <QMessageBox>
 #include <QProcess>
+#include <QTimer>
 #include <QFile>
+
+#define VERSION "0.0.1"
 
 namespace Ui {
 class MainWindow;
@@ -22,13 +25,6 @@ public:
     // Setup
     void setupAdderPart();
     void setupScannerPart();
-
-    // Adder Part
-    void scanUID();
-    void addUID();
-    void clearUID();
-    // Scanner Part
-
     ~MainWindow();
 
 public slots:
@@ -36,8 +32,11 @@ public slots:
     void scanTheUID();
     void addCurrentUID();
     void clearCurrentUID();
+
+    void pendingScan();
     // Scanner
     void openScanMode();
+    void pendingScan_long();
     // Informer
     void showInfo();
 
@@ -51,6 +50,8 @@ private:
     QTextBrowser *UID_Displayer;
     // In scanner part
     QTextBrowser *scannedUID,*compareResult;
+
+    QTimer *scanPender,*scanPender_long;
 };
 
 #endif // MAINWINDOW_H

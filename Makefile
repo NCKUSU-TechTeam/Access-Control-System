@@ -33,7 +33,7 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = Access_Control_System1.0.0
-DISTDIR = /home/kevin/Access_Control_System/.tmp/Access_Control_System1.0.0
+DISTDIR = /home/kevin/Access-Control-System/.tmp/Access_Control_System1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/home/kevin/Qt5.7.0/5.7/gcc_64/lib
 LIBS          = $(SUBLIBS) -L/home/kevin/Qt5.7.0/5.7/gcc_64/lib -lQt5Widgets -L/usr/lib64 -lQt5Gui -lQt5Core -lGL -lpthread 
@@ -49,9 +49,11 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = main.cpp \
-		mainwindow.cpp moc_mainwindow.cpp
+		mainwindow.cpp qrc_image.cpp \
+		moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
+		qrc_image.o \
 		moc_mainwindow.o
 DIST          = ../Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		../Qt5.7.0/5.7/gcc_64/mkspecs/common/unix.conf \
@@ -363,6 +365,7 @@ Makefile: Access_Control_System.pro ../Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++/qmak
 		../Qt5.7.0/5.7/gcc_64/mkspecs/features/yacc.prf \
 		../Qt5.7.0/5.7/gcc_64/mkspecs/features/lex.prf \
 		Access_Control_System.pro \
+		image.qrc \
 		../Qt5.7.0/5.7/gcc_64/lib/libQt5Widgets.prl \
 		../Qt5.7.0/5.7/gcc_64/lib/libQt5Gui.prl \
 		../Qt5.7.0/5.7/gcc_64/lib/libQt5Core.prl
@@ -516,6 +519,7 @@ Makefile: Access_Control_System.pro ../Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++/qmak
 ../Qt5.7.0/5.7/gcc_64/mkspecs/features/yacc.prf:
 ../Qt5.7.0/5.7/gcc_64/mkspecs/features/lex.prf:
 Access_Control_System.pro:
+image.qrc:
 ../Qt5.7.0/5.7/gcc_64/lib/libQt5Widgets.prl:
 ../Qt5.7.0/5.7/gcc_64/lib/libQt5Gui.prl:
 ../Qt5.7.0/5.7/gcc_64/lib/libQt5Core.prl:
@@ -533,6 +537,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
+	$(COPY_FILE) --parents image.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.h $(DISTDIR)/
 	$(COPY_FILE) --parents main.cpp mainwindow.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
@@ -559,8 +564,14 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all:
+compiler_rcc_make_all: qrc_image.cpp
 compiler_rcc_clean:
+	-$(DEL_FILE) qrc_image.cpp
+qrc_image.cpp: image.qrc \
+		../Qt5.7.0/5.7/gcc_64/bin/rcc \
+		img/NCKUSU.png
+	/home/kevin/Qt5.7.0/5.7/gcc_64/bin/rcc -name image image.qrc -o qrc_image.cpp
+
 compiler_moc_header_make_all: moc_mainwindow.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp
@@ -682,12 +693,15 @@ moc_mainwindow.cpp: ../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
 		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
 		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMessageBox \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmessagebox.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdialog.h \
 		../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocess.h \
 		../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		mainwindow.h \
 		../Qt5.7.0/5.7/gcc_64/bin/moc
-	/home/kevin/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/kevin/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/kevin/Access_Control_System -I/home/kevin/Qt5.7.0/5.7/gcc_64/include -I/home/kevin/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/kevin/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/kevin/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+	/home/kevin/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/kevin/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/kevin/Access-Control-System -I/home/kevin/Qt5.7.0/5.7/gcc_64/include -I/home/kevin/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/kevin/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/kevin/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -704,7 +718,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_header_clean compiler_uic_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
 
@@ -827,6 +841,9 @@ main.o: main.cpp mainwindow.h \
 		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
 		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
 		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMessageBox \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmessagebox.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdialog.h \
 		../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocess.h \
 		../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
@@ -959,11 +976,53 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
 		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
 		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMessageBox \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmessagebox.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdialog.h \
 		../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocess.h \
 		../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
-		ui_mainwindow.h
+		ui_mainwindow.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QToolBar \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtoolbar.h \
+		../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
+
+qrc_image.o: qrc_image.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_image.o qrc_image.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
