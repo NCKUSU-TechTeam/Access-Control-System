@@ -13,7 +13,7 @@ cat "data/userdata.db" | sort | uniq > data/userdata1.db
 
 cp data/userdata1.db data/userdata.db && rm data/userdata1.db
 
-detect="$(cat "data/userdata.db" | grep "${reflect}" | wc -l )"
+detect="$(cat "data/userdata1.db" | grep "${reflect}" | wc -l )"
 
 echo $detect
 

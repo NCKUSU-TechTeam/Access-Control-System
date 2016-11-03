@@ -14,4 +14,4 @@ do
 	sleep 3
 done
 
-# echo "Done ! This card ID is " $cardID
+echo "Done ! This card ID is " $cardID

@@ -6,6 +6,8 @@ do
 	sleep 3
 done
 
+newID="$(echo ${cardID} | awk '{gsub(" ","_")} { print $0 }')"
+
 # Get the userid and add it into mysql
-gcc adduser.c -o adduser
-./adduser $cardID
+gcc src/adduser.c -o adduser
+./adduser $newID
