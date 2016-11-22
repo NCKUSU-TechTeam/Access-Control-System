@@ -2,7 +2,7 @@
 
 # install the dependency on your linux pc
 sudo apt-get install pcscd libpcsc-perl pcsc-tools libccid
-sudo apt-get update upgrade
+sudo apt-get update
 
 # future work - using mysql to control user database
 # sudo apt-get install mysql-server mysql-client

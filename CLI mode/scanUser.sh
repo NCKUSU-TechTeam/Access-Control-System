@@ -21,8 +21,8 @@ if [ "$detect" -eq "0" ]; then
 	echo "No , enroll again"
 else
 	echo "Yes , it exist"
-	# Implement open door function
-	
+	# Implement open door function - open the gate
+	sudo ./open
 fi
 
 bash scanUser.sh
